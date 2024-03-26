@@ -46,5 +46,6 @@ response = session.post(
     HOST_NAME + "/trading-api/v2/users/login",
     json=body,
     headers=headers,
+    verify=False
 )
 print(f"HTTP Status: {response.status_code}, \n{response.text}")

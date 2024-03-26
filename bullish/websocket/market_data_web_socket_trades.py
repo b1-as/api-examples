@@ -1,6 +1,5 @@
 import json
 import os
-import ssl
 import threading
 import time
 
@@ -11,7 +10,6 @@ load_dotenv()
 
 HOST_NAME = os.getenv("BX_WS_API_HOSTNAME")
 JWT_TOKEN = os.getenv("BX_JWT")
-TRADING_ACCOUNT_ID = os.getenv("BX_TRADING_ACCOUNT_ID")
 COOKIE = f"JWT_COOKIE={JWT_TOKEN}"
 
 
@@ -50,7 +48,8 @@ def on_open(conn):
         "type": "command",
         "method": "subscribe",
         "params": {
-            "topic": "assetAccounts",
+            "topic": "l1Orderbook",
+            "symbol": "BTCUSD"
         },
         "id": get_id()
     }
@@ -58,16 +57,14 @@ def on_open(conn):
 
 
 def open_connection():
-    url = f"{HOST_NAME}/trading-api/v1/private-data?tradingAccountId={TRADING_ACCOUNT_ID}" if TRADING_ACCOUNT_ID is not None else f"{HOST_NAME}/trading-api/v1/private-data"
-    ws_conn = websocket.WebSocketApp(url,
+    ws_conn = websocket.WebSocketApp(HOST_NAME + "/trading-api/v1/market-data/trades/BTCUSDC",
                                      on_open=on_open,
                                      on_message=on_message,
                                      on_error=on_error,
                                      on_close=on_close,
-                                     cookie=COOKIE,
-                                     )
+                                     cookie=COOKIE)
     threading.Timer(interval=5, function=ping, args=(ws_conn,)).start()
-    ws_conn.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+    ws_conn.run_forever()
 
 
 wst = threading.Thread(target=open_connection)

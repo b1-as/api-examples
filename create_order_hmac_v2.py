@@ -1,3 +1,5 @@
+import time
+
 import hmac, requests, os, json
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -13,8 +15,8 @@ TRADING_ACCOUNT_ID = os.getenv("BX_TRADING_ACCOUNT_ID")
 
 session = requests.Session()
 response = session.get(HOST_NAME + "/trading-api/v1/nonce", verify=False)
-nonce = json.loads(response.text)["lowerBound"]
-next_nonce = str(nonce + 1)
+# nonce = json.loads(response.text)["lowerBound"]
+next_nonce = str(int(time.time())*1000000)
 timestamp = str(int(datetime.now(timezone.utc).timestamp() * 1000))
 
 body = {
@@ -24,7 +26,7 @@ body = {
     "command": {
         "commandType": "V2CreateOrder",
         "handle": None,
-        "symbol": "BTCUSD",
+        "symbol": "BTCUSDC",
         "type": "LMT",
         "side": "BUY",
         "price": "30071.5000",
@@ -35,6 +37,9 @@ body = {
         "tradingAccountId": TRADING_ACCOUNT_ID,
     }
 }
+
+print(nonce, next_nonce)
+print(body)
 
 payload = (json.dumps(body, separators=(",", ":"))).encode("utf-8")
 digest = sha256(payload).hexdigest().encode('utf-8')

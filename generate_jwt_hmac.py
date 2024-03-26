@@ -1,4 +1,4 @@
-import hmac, requests, os
+import hmac, requests, os, time
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 from hashlib import sha256
@@ -10,7 +10,7 @@ PUBLIC_KEY = os.getenv("BX_PUBLIC_KEY")
 SECRET_KEY = bytes(os.getenv("BX_SECRET_KEY"), 'utf-8')
 
 session = requests.Session()
-nonce = str(1234567890)
+nonce = str(int(time.time()))
 ts = str(int(datetime.now(timezone.utc).timestamp() * 1000))
 path = "/trading-api/v1/users/hmac/login"
 message = ts + nonce + "GET" + "/trading-api/v1/users/hmac/login"
@@ -23,6 +23,6 @@ headers = {
     'BX-TIMESTAMP': ts
 }
 url = HOST_NAME + path
-response = session.get(url, headers=headers)
+response = session.get(url, headers=headers, verify=False)
 
 print(f"HTTP Status: {response.status_code}, \n{response.text}")

@@ -48,8 +48,8 @@ def on_open(conn):
         "type": "command",
         "method": "subscribe",
         "params": {
-            "topic": "l1Orderbook",
-            "symbol": "BTCUSD"
+            "topic": "l2Snapshot",
+            "symbol": "BTCUSDC"
         },
         "id": get_id()
     }
@@ -57,7 +57,7 @@ def on_open(conn):
 
 
 def open_connection():
-    ws_conn = websocket.WebSocketApp(HOST_NAME + "/trading-api/v1/market-data",
+    ws_conn = websocket.WebSocketApp(HOST_NAME + "/trading-api/markets/BTCUSDC/orderbook/hybrid",
                                      on_open=on_open,
                                      on_message=on_message,
                                      on_error=on_error,

@@ -21,5 +21,6 @@ headers = {
 response = session.get(
     HOST_NAME + "/trading-api/v1/accounts/trading-accounts",
     headers=headers,
+    verify=False,
 )
 print(f"HTTP Status: {response.status_code}, \n{response.text}")

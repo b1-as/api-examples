@@ -19,7 +19,8 @@ headers = {
 }
 
 response = session.get(
-    HOST_NAME + "/trading-api/v1/accounts/trading-accounts",
+    HOST_NAME + "/trading-api/v1/accounts/asset",
     headers=headers,
+    verify=False,
 )
-print(f"HTTP Status: {response.status_code}, \n{response.text}")
+print(f"GET {response.url}, HTTP Status: {response.status_code}, \n{response.text}")
